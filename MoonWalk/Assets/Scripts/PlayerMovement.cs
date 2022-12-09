@@ -3,7 +3,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Player Movement")]
     [SerializeField] private float moveSpeed = 10f;
+
+    [Header("Player Animation")]
+    [SerializeField] private Animator anim;
 
     private Rigidbody2D rb2d;
     private Transform tf;
@@ -24,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
         CheckForInput();
         MovePlayer();
         FlipSpriteToWalkDirection();
+        AnimatePlayer();
     }
 
     private void FlipSpriteToWalkDirection()
@@ -40,11 +45,23 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckForInput()
     {
-        xMove = Input.GetAxis("Horizontal") * Time.deltaTime;
+        xMove = Input.GetAxis("Horizontal");
     }
 
     private void MovePlayer()
     {
-        tf.Translate(xMove * moveSpeed, 0, 0);
+        tf.Translate((xMove * moveSpeed) * Time.deltaTime, 0, 0);
+    }
+
+    private void AnimatePlayer()
+    {
+        if (xMove != 0)
+        {
+            anim.SetBool("IsMoving", true);
+        }
+        else
+        {
+            anim.SetBool("IsMoving", false);
+        }
     }
 }
