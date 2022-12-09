@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform tf;
     private SpriteRenderer sr;
     private float xMove;
+    private float yMove;
 
     // Start is called before the first frame update
     void Start()
@@ -26,9 +27,13 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         CheckForInput();
-        MovePlayer();
         FlipSpriteToWalkDirection();
         AnimatePlayer();
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
     }
 
     private void FlipSpriteToWalkDirection()
@@ -46,11 +51,12 @@ public class PlayerMovement : MonoBehaviour
     private void CheckForInput()
     {
         xMove = Input.GetAxis("Horizontal");
+        yMove = rb2d.velocity.y;
     }
 
     private void MovePlayer()
     {
-        tf.Translate((xMove * moveSpeed) * Time.deltaTime, 0, 0);
+        rb2d.velocity = new Vector2((xMove * moveSpeed) *  Time.deltaTime, rb2d.velocity.y);
     }
 
     private void AnimatePlayer()
