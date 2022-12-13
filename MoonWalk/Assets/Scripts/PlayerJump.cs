@@ -51,14 +51,7 @@ public class PlayerJump : MonoBehaviour
 
     private void AnimateJump()
     {
-        if (!IsGrounded())
-        {
-            anim.SetBool("IsJumping", true);
-        }
-        else
-        {
-            anim.SetBool("IsJumping", false);
-        }
+        anim.SetBool("IsJumping", !IsGrounded());
     }
 
     private bool IsGrounded()

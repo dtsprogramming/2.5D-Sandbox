@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    #region Variables
+
     [Header("Player Movement")]
     [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private float dashBoost = 200f;
 
     [Header("Player Animation")]
     [SerializeField] private Animator anim;
@@ -12,10 +15,16 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb2d;
     private Transform tf;
     private SpriteRenderer sr;
+
     private float xMove;
     private float yMove;
+    private bool isDashing;
 
-    // Start is called before the first frame update
+    #endregion Variables
+
+
+    #region Unity Methods
+
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
@@ -26,7 +35,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckForInput();
+        MoveInput();
+        PlayerAttack();
         FlipSpriteToWalkDirection();
         AnimatePlayer();
     }
@@ -34,6 +44,41 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
+    }
+
+    #endregion Unity Methods
+
+
+    #region Self-defined Methods
+
+
+    private bool MoveInput()
+    {
+        xMove = Input.GetAxis("Horizontal");
+        yMove = rb2d.velocity.y;
+        isDashing = Input.GetKeyDown(KeyCode.LeftShift);
+
+        return xMove != 0;
+    }
+
+    private void MovePlayer()
+    {
+        float boost = dashBoost;
+
+        if (!isDashing)
+        {
+            rb2d.velocity = new Vector2((xMove * moveSpeed) * Time.deltaTime, rb2d.velocity.y);
+        }
+        else
+        {
+            rb2d.velocity = new Vector2((xMove * (moveSpeed * boost)) * Time.deltaTime, rb2d.velocity.y);
+        }
+        
+    }
+
+    private bool PlayerAttack()
+    {
+        return Input.GetKeyDown("mouse 0");
     }
 
     private void FlipSpriteToWalkDirection()
@@ -48,26 +93,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckForInput()
-    {
-        xMove = Input.GetAxis("Horizontal");
-        yMove = rb2d.velocity.y;
-    }
-
-    private void MovePlayer()
-    {
-        rb2d.velocity = new Vector2((xMove * moveSpeed) *  Time.deltaTime, rb2d.velocity.y);
-    }
-
     private void AnimatePlayer()
     {
-        if (xMove != 0)
-        {
-            anim.SetBool("IsMoving", true);
-        }
-        else
-        {
-            anim.SetBool("IsMoving", false);
-        }
+        anim.SetBool("IsMoving", MoveInput());
+        anim.SetBool("IsAttacking", PlayerAttack());
+        anim.SetBool("IsDashing", isDashing);
     }
+
+    #endregion Self-defined Methods
 }

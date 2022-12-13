@@ -1007,6 +1007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 700
+  dashBoost: 3
   anim: {fileID: 836485761}
 --- !u!114 &836485765
 MonoBehaviour:
