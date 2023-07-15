@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerMovement : MonoBehaviour
 {
     #region Variables
@@ -16,9 +17,9 @@ public class PlayerMovement : MonoBehaviour
     private Transform tf;
     private SpriteRenderer sr;
 
-    private float xMove;
+    private PlayerInput pInput;
+
     private float yMove;
-    private bool isDashing;
 
     #endregion Variables
 
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        pInput = GetComponent<PlayerInput>();
         rb2d = GetComponent<Rigidbody2D>();
         tf = GetComponent<Transform>();
         sr = GetComponent<SpriteRenderer>();
@@ -35,7 +37,6 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MoveInput();
         PlayerAttack();
         FlipSpriteToWalkDirection();
         AnimatePlayer();
@@ -51,27 +52,19 @@ public class PlayerMovement : MonoBehaviour
 
     #region Self-defined Methods
 
-
-    private bool MoveInput()
-    {
-        xMove = Input.GetAxis("Horizontal");
-        yMove = rb2d.velocity.y;
-        isDashing = Input.GetKeyDown(KeyCode.LeftShift);
-
-        return xMove != 0;
-    }
-
     private void MovePlayer()
     {
+        yMove = rb2d.velocity.y;
+
         float boost = dashBoost;
 
-        if (!isDashing)
+        if (!pInput.isDashing)
         {
-            rb2d.velocity = new Vector2((xMove * moveSpeed) * Time.deltaTime, rb2d.velocity.y);
+            rb2d.velocity = new Vector2(pInput.xMove * moveSpeed * Time.deltaTime, rb2d.velocity.y);
         }
         else
         {
-            rb2d.velocity = new Vector2((xMove * (moveSpeed * boost)) * Time.deltaTime, rb2d.velocity.y);
+            rb2d.velocity = new Vector2(pInput.xMove * (moveSpeed * boost) * Time.deltaTime, rb2d.velocity.y);
         }
         
     }
@@ -83,11 +76,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FlipSpriteToWalkDirection()
     {
-        if (xMove > 0)
+        if (pInput.xMove > 0)
         {
             sr.flipX = false;
         }
-        else if (xMove < 0)
+        else if (pInput.xMove < 0)
         {
             sr.flipX = true;
         }
@@ -95,9 +88,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void AnimatePlayer()
     {
-        anim.SetBool("IsMoving", MoveInput());
+        anim.SetBool("IsMoving", pInput.xMove != 0);
         anim.SetBool("IsAttacking", PlayerAttack());
-        anim.SetBool("IsDashing", isDashing);
+        anim.SetBool("IsDashing", pInput.isDashing);
     }
 
     #endregion Self-defined Methods
