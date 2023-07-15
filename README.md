@@ -1,2 +1,2 @@
-# 5_Days_Game_Jam
- Make a game in 5 days.  Theme: Gravity
+# 2.5D Sandbox
+ Concept testing a hybrid game
