@@ -1,14 +1,12 @@
 using Cinemachine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSwap : MonoBehaviour
 {
-    [SerializeField] GameObject player2D;
-    [SerializeField] GameObject player3D;
+    [SerializeField] private GameObject player2D;
+    [SerializeField] private GameObject player3D;
 
-    [SerializeField] CinemachineVirtualCamera vc;
+    [SerializeField] private CinemachineVirtualCamera vc2d;
 
     private bool playerSwap = false;
 
@@ -25,15 +23,11 @@ public class PlayerSwap : MonoBehaviour
 
         if (!playerSwap)
         {
-            vc.Follow = player2D.transform;
-            vc.LookAt = player2D.transform;
-            vc.Priority = 1;
+            vc2d.enabled = true;
         }
         else
         {
-            vc.Follow = player3D.transform;
-            vc.LookAt = player3D.transform;
-            vc.Priority = 1;
+            vc2d.enabled = false;
         }
     }
 }
